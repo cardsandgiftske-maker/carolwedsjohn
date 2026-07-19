@@ -61,7 +61,7 @@ export default function Hero() {
         <img
   src={heroImage}
   alt="Carol and John Wedding Portrait"
-  className="w-full h-full object-cover object-center-[center_30%] opacity-[0.41] scale-102 filter brightness-[1.03] contrast-[0.98]"
+  className="w-full h-full object-cover object-center opacity-[0.41] scale-102 filter brightness-[1.03] contrast-[0.98]"
 />
         {/* Elegant warm radial and vertical gradients for readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#FCFAF7] via-[#FCFAF7]/85 to-[#FCFAF7]/50" />
