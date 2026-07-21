@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Heart, Calendar, MapPin, Clock } from 'lucide-react';
 import { WEDDING_DATE, WEDDING_DETAILS } from '../data';
 import Crest from './Crest';
+import heroImage from "../assets/images/carol_and_john_portrait_1784461506194.jpg";
 
 interface TimeLeft {
   days: number;
@@ -57,12 +58,11 @@ export default function Hero() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#FCFAF7] text-stone-850 py-16" id="hero-section">
       {/* Background Image with Warm Paper Vignette/Overlay */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="/src/assets/images/carol_and_john_portrait_1784461506194.jpg"
-          alt="Carole and John Wedding Portrait"
-          className="w-full h-full object-cover object-center opacity-[0.22] scale-105 filter brightness-[1.03] contrast-[0.98]"
-          referrerPolicy="no-referrer"
-        />
+       <img
+  src={heroImage}
+  alt="Carol and John Wedding Portrait"
+  className="w-full h-full object-cover object-center opacity-[0.22] scale-105 filter brightness-[1.03] contrast-[0.98]"
+/>
         {/* Elegant warm radial and vertical gradients for readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#FCFAF7] via-[#FCFAF7]/85 to-[#FCFAF7]/50" />
         <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#FCFAF7]/40 to-[#FCFAF7]" />
