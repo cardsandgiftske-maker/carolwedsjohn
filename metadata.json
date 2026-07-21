@@ -1,6 +1,0 @@
-{
-  "name": "Carol & John Wedding Invitation",
-  "description": "An elegant, premium dark-mode wedding invitation and RSVP portal for Carol and John's wedding, featuring schedule, dress code, maps, and e-card generator.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
