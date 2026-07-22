@@ -94,7 +94,7 @@ export default function Crest({ size = 'md', animated = true }: CrestProps) {
               x="100"
               y="88"
               textAnchor="middle"
-              className="font-serif italic select-none fill-current text-maroon-700/80"
+              className="font-serif bold select-none fill-current text-maroon-700/80"
               style={{ fontSize: '32px' }}
             >
               &amp;
