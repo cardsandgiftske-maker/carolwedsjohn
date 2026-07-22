@@ -148,7 +148,7 @@ export default function RsvpForm() {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Caroline Mwangi"
+                    placeholder="e.g. Johnson Kariuki"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full bg-stone-50/50 border border-stone-200 focus:border-maroon-700 focus:ring-1 focus:ring-maroon-700/20 rounded-xl px-4 py-3 text-sm text-stone-800 outline-none transition-all"
