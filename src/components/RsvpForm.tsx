@@ -70,7 +70,7 @@ export default function RsvpForm() {
         adultsCount: willAttend === 'yes' ? adultsCount : 0,
         submittedAt: new Date().toISOString(),
         eCardCode: generateInvitationCode(),
-        notes: notes.trim() || undefined,
+        notes: notes.trim(),
       };
 
       // Save to Firebase (with transparent localStorage fallback inside)
