@@ -15,12 +15,13 @@ import { RsvpGuest } from '../types';
 
 // Read Firebase configuration from Vite environment variables
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyBnL1qqtwJGXZ-P-qN76FyccZ3ZaYVgm6Q",
+  authDomain: "carolwedsjohn.firebaseapp.com",
+  databaseURL: "https://carolwedsjohn-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "carolwedsjohn",
+  storageBucket: "carolwedsjohn.firebasestorage.app",
+  messagingSenderId: "331870678796",
+  appId: "1:331870678796:web:bb3218bf8350f0f10ea329"
 };
 
 // Check if Firebase is fully configured
