@@ -141,14 +141,20 @@ export async function deleteRsvp(id: string): Promise<void> {
 /**
  * Toggle RSVP attendance status or change seat count
  */
-export async function updateRsvpStatus(id: string, willAttend: 'yes' | 'no', adultsCount: number): Promise<void> {
+export async function updateRsvpStatus(
+  id: string, 
+  willAttend: 'yes' | 'no', 
+  adultsCount: number, 
+  childrenCount: number = 0
+): Promise<void> {
   const db = getDb();
   if (db) {
     try {
       const docRef = doc(db, COLLECTION_NAME, id);
       await updateDoc(docRef, {
         willAttend,
-        adultsCount
+        adultsCount,
+        childrenCount
       });
       return;
     } catch (error) {
@@ -162,14 +168,14 @@ export async function updateRsvpStatus(id: string, willAttend: 'yes' | 'no', adu
       return {
         ...item,
         willAttend,
-        adultsCount
+        adultsCount,
+        childrenCount
       };
     }
     return item;
   });
   saveLocalRsvps(updated);
 }
-
 /**
  * Real-time RSVP updates subscription
  */
