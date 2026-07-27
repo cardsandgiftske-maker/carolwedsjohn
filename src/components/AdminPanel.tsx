@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Shield, Key, Search, Trash2, Download, RefreshCw, X, Eye, EyeOff, Users, CheckCircle, XCircle, FileSpreadsheet, CloudLightning } from 'lucide-react';
+import { Shield, Key, Search, Trash2, Download, RefreshCw, X, Eye, EyeOff, Users, CheckCircle, XCircle, FileSpreadsheet, CloudLightning, Baby } from 'lucide-react';
 import { RsvpGuest } from '../types';
 import { deleteRsvp, updateRsvpStatus, subscribeToRsvps, isFirebaseConfigured, getRsvps } from '../lib/firebase';
 
@@ -49,10 +49,11 @@ export default function AdminPanel() {
     if (!guest) return;
 
     const nextAttend = guest.willAttend === 'yes' ? 'no' : 'yes';
-    const nextSeats = nextAttend === 'yes' ? 1 : 0;
+    const nextAdults = nextAttend === 'yes' ? (guest.adultsCount || 1) : 0;
+    const nextChildren = nextAttend === 'yes' ? (guest.childrenCount || 0) : 0;
 
     try {
-      await updateRsvpStatus(id, nextAttend, nextSeats);
+      await updateRsvpStatus(id, nextAttend, nextAdults, nextChildren);
     } catch (err) {
       console.error('Failed to update attendance:', err);
     }
@@ -62,13 +63,15 @@ export default function AdminPanel() {
     if (guests.length === 0) return;
 
     // Construct CSV Header and Content
-    const headers = ['ID', 'Full Name', 'Phone Number', 'Will Attend', 'Seats Requested', 'Digital Code', 'Notes', 'Submitted At'];
+    const headers = ['ID', 'Full Name', 'Phone Number', 'Will Attend', 'Adults', 'Children', 'Total Seats', 'Digital Code', 'Notes', 'Submitted At'];
     const rows = guests.map((g) => [
       g.id,
       `"${g.fullName.replace(/"/g, '""')}"`,
       `"${g.phoneNumber}"`,
       g.willAttend === 'yes' ? 'YES' : 'NO',
-      g.adultsCount,
+      g.willAttend === 'yes' ? (g.adultsCount || 0) : 0,
+      g.willAttend === 'yes' ? (g.childrenCount || 0) : 0,
+      g.willAttend === 'yes' ? ((g.adultsCount || 0) + (g.childrenCount || 0)) : 0,
       g.eCardCode,
       `"${(g.notes || '').replace(/"/g, '""')}"`,
       g.submittedAt,
@@ -105,7 +108,9 @@ export default function AdminPanel() {
   const totalRsvps = guests.length;
   const totalAttending = guests.filter((g) => g.willAttend === 'yes').length;
   const totalDeclined = guests.filter((g) => g.willAttend === 'no').length;
-  const totalSeats = guests.reduce((sum, g) => sum + (g.willAttend === 'yes' ? g.adultsCount : 0), 0);
+  const totalAdults = guests.reduce((sum, g) => sum + (g.willAttend === 'yes' ? (g.adultsCount || 0) : 0), 0);
+  const totalChildren = guests.reduce((sum, g) => sum + (g.willAttend === 'yes' ? (g.childrenCount || 0) : 0), 0);
+  const totalSeats = totalAdults + totalChildren;
 
   return (
     <>
@@ -211,48 +216,59 @@ export default function AdminPanel() {
                 /* Authenticated Dashboard Panel */
                 <div className="p-6 overflow-y-auto space-y-6 flex-1 flex flex-col">
                   {/* Dashboard stats cards */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                     {/* Stat 1 */}
-                    <div className="bg-[#FCFAF7] border border-stone-200 p-4 rounded-2xl flex items-center gap-3.5 shadow-sm">
-                      <div className="w-10 h-10 rounded-xl bg-maroon-50 text-maroon-700 flex items-center justify-center shrink-0">
-                        <Users className="w-5 h-5" />
+                    <div className="bg-[#FCFAF7] border border-stone-200 p-3.5 rounded-2xl flex items-center gap-3 shadow-sm">
+                      <div className="w-9 h-9 rounded-xl bg-maroon-50 text-maroon-700 flex items-center justify-center shrink-0">
+                        <Users className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-stone-500 uppercase font-sans font-bold">Total RSVPs</p>
-                        <p className="text-xl font-semibold font-serif text-stone-900">{totalRsvps}</p>
+                        <p className="text-[9px] text-stone-500 uppercase font-sans font-bold">Total RSVPs</p>
+                        <p className="text-lg font-semibold font-serif text-stone-900">{totalRsvps}</p>
                       </div>
                     </div>
 
                     {/* Stat 2 */}
-                    <div className="bg-[#FCFAF7] border border-stone-200 p-4 rounded-2xl flex items-center gap-3.5 shadow-sm">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-                        <CheckCircle className="w-5 h-5" />
+                    <div className="bg-[#FCFAF7] border border-stone-200 p-3.5 rounded-2xl flex items-center gap-3 shadow-sm">
+                      <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                        <CheckCircle className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-stone-500 uppercase font-sans font-bold">Attending Accounts</p>
-                        <p className="text-xl font-semibold font-serif text-stone-900">{totalAttending}</p>
+                        <p className="text-[9px] text-stone-500 uppercase font-sans font-bold">Attending</p>
+                        <p className="text-lg font-semibold font-serif text-stone-900">{totalAttending}</p>
                       </div>
                     </div>
 
                     {/* Stat 3 */}
-                    <div className="bg-[#FCFAF7] border border-stone-200 p-4 rounded-2xl flex items-center gap-3.5 shadow-sm">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-                        <Users className="w-5 h-5" />
+                    <div className="bg-[#FCFAF7] border border-stone-200 p-3.5 rounded-2xl flex items-center gap-3 shadow-sm">
+                      <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                        <Users className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-stone-500 uppercase font-sans font-bold">Total Seats</p>
-                        <p className="text-xl font-semibold font-serif text-stone-900">{totalSeats}</p>
+                        <p className="text-[9px] text-stone-500 uppercase font-sans font-bold">Total Seats</p>
+                        <p className="text-lg font-semibold font-serif text-stone-900">{totalSeats}</p>
                       </div>
                     </div>
 
                     {/* Stat 4 */}
-                    <div className="bg-[#FCFAF7] border border-stone-200 p-4 rounded-2xl flex items-center gap-3.5 shadow-sm">
-                      <div className="w-10 h-10 rounded-xl bg-stone-100 text-stone-600 flex items-center justify-center shrink-0">
-                        <XCircle className="w-5 h-5" />
+                    <div className="bg-[#FCFAF7] border border-stone-200 p-3.5 rounded-2xl flex items-center gap-3 shadow-sm">
+                      <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                        <Users className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-stone-500 uppercase font-sans font-bold">Declined Count</p>
-                        <p className="text-xl font-semibold font-serif text-stone-900">{totalDeclined}</p>
+                        <p className="text-[9px] text-stone-500 uppercase font-sans font-bold">Adults</p>
+                        <p className="text-lg font-semibold font-serif text-stone-900">{totalAdults}</p>
+                      </div>
+                    </div>
+
+                    {/* Stat 5 */}
+                    <div className="bg-[#FCFAF7] border border-stone-200 p-3.5 rounded-2xl flex items-center gap-3 shadow-sm">
+                      <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                        <Baby className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-[9px] text-stone-500 uppercase font-sans font-bold">Children</p>
+                        <p className="text-lg font-semibold font-serif text-stone-900">{totalChildren}</p>
                       </div>
                     </div>
                   </div>
@@ -369,7 +385,11 @@ export default function AdminPanel() {
                                   }`}
                                   title="Click to toggle status"
                                 >
-                                  {guest.willAttend === 'yes' ? `Attending (Seats: ${guest.adultsCount})` : 'Declined'}
+                                  {guest.willAttend === 'yes'
+                                    ? `Attending (${guest.adultsCount || 0} Adult${(guest.adultsCount || 0) !== 1 ? 's' : ''}${
+                                        (guest.childrenCount || 0) > 0 ? `, ${guest.childrenCount} Child${guest.childrenCount !== 1 ? 'ren' : ''}` : ''
+                                      })`
+                                    : 'Declined'}
                                 </button>
                               </td>
                               <td className="p-4 text-center font-mono font-bold text-maroon-750 tracking-wider">
