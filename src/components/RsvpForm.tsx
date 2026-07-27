@@ -151,7 +151,7 @@ export default function RsvpForm() {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Caroline Mwangi"
+                    placeholder="e.g. Johnson Kariuki"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full bg-stone-50/50 border border-stone-200 focus:border-maroon-700 focus:ring-1 focus:ring-maroon-700/20 rounded-xl px-4 py-3 text-sm text-stone-800 outline-none transition-all"
@@ -340,7 +340,7 @@ export default function RsvpForm() {
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4" />
-                      <span>Confirm &amp; Generate E-Card</span>
+                      <span>Confirm</span>
                     </>
                   )}
                 </button>
@@ -466,7 +466,7 @@ Kindly note that photos and videos will be taken throughout the celebration. By 
                     </div>
 
                     <div className="pt-4 border-t border-stone-100 w-full text-[10px] text-stone-400 uppercase tracking-widest font-sans font-bold">
-                      Digital Pass Generator
+                      Digital Code Generator
                     </div>
                   </motion.div>
                 )}
