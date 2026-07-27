@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Clipboard, QrCode, Download, Share2, CloudLightning } from 'lucide-react';
+import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Clipboard, QrCode, Download, Share2, CloudLightning, Users, Baby, Plus, Minus } from 'lucide-react';
 import { RsvpGuest } from '../types';
 import { WEDDING_DETAILS } from '../data';
 import { saveRsvp, isFirebaseConfigured } from '../lib/firebase';
@@ -10,6 +10,7 @@ export default function RsvpForm() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [willAttend, setWillAttend] = useState<'yes' | 'no'>('yes');
   const [adultsCount, setAdultsCount] = useState(1);
+  const [childrenCount, setChildrenCount] = useState(0);
   const [notes, setNotes] = useState('');
   
   const [loading, setLoading] = useState(false);
@@ -68,9 +69,10 @@ export default function RsvpForm() {
         phoneNumber: phoneNumber.trim(),
         willAttend,
         adultsCount: willAttend === 'yes' ? adultsCount : 0,
+        childrenCount: willAttend === 'yes' ? childrenCount : 0,
         submittedAt: new Date().toISOString(),
         eCardCode: generateInvitationCode(),
-        notes: notes.trim(),
+        notes: notes.trim() || undefined,
       };
 
       // Save to Firebase (with transparent localStorage fallback inside)
@@ -84,6 +86,7 @@ export default function RsvpForm() {
       setPhoneNumber('');
       setWillAttend('yes');
       setAdultsCount(1);
+      setChildrenCount(0);
       setNotes('');
 
       // Dispatches custom event to notify Admin Panel to reload
@@ -148,7 +151,7 @@ export default function RsvpForm() {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Johnson Kariuki"
+                    placeholder="e.g. Caroline Mwangi"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full bg-stone-50/50 border border-stone-200 focus:border-maroon-700 focus:ring-1 focus:ring-maroon-700/20 rounded-xl px-4 py-3 text-sm text-stone-800 outline-none transition-all"
@@ -203,6 +206,104 @@ export default function RsvpForm() {
                     </button>
                   </div>
                 </div>
+
+                {/* Number of Adults & Children Attending */}
+                <AnimatePresence>
+                  {willAttend === 'yes' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-3 pt-2 pb-1 overflow-hidden"
+                    >
+                      <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold block">
+                        Number of Guests Attending
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {/* Adults Input */}
+                        <div className="bg-stone-50/70 border border-stone-200 p-3.5 rounded-xl space-y-2">
+                          <label className="text-[11px] uppercase tracking-wider text-stone-600 font-sans font-bold flex items-center justify-between">
+                            <span className="flex items-center gap-1.5">
+                              <Users className="w-3.5 h-3.5 text-maroon-700" />
+                              <span>Adults</span>
+                            </span>
+                            <span className="text-[10px] font-normal text-stone-400 capitalize">(Age 13+)</span>
+                          </label>
+                          <div className="flex items-center justify-between bg-white border border-stone-200 rounded-lg p-1">
+                            <button
+                              type="button"
+                              onClick={() => setAdultsCount(Math.max(1, adultsCount - 1))}
+                              className="w-8 h-8 rounded-md bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-700 font-bold flex items-center justify-center cursor-pointer transition-all"
+                              title="Decrease adults count"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <input
+                              type="number"
+                              min="1"
+                              max="20"
+                              value={adultsCount}
+                              onChange={(e) => setAdultsCount(Math.max(1, parseInt(e.target.value) || 1))}
+                              className="w-12 text-center font-serif text-base font-semibold text-stone-900 outline-none bg-transparent"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setAdultsCount(adultsCount + 1)}
+                              className="w-8 h-8 rounded-md bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-700 font-bold flex items-center justify-center cursor-pointer transition-all"
+                              title="Increase adults count"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Children Input */}
+                        <div className="bg-stone-50/70 border border-stone-200 p-3.5 rounded-xl space-y-2">
+                          <label className="text-[11px] uppercase tracking-wider text-stone-600 font-sans font-bold flex items-center justify-between">
+                            <span className="flex items-center gap-1.5">
+                              <Baby className="w-3.5 h-3.5 text-emerald-700" />
+                              <span>Children</span>
+                            </span>
+                            <span className="text-[10px] font-normal text-stone-400 capitalize">(Under 13)</span>
+                          </label>
+                          <div className="flex items-center justify-between bg-white border border-stone-200 rounded-lg p-1">
+                            <button
+                              type="button"
+                              onClick={() => setChildrenCount(Math.max(0, childrenCount - 1))}
+                              className="w-8 h-8 rounded-md bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-700 font-bold flex items-center justify-center cursor-pointer transition-all"
+                              title="Decrease children count"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <input
+                              type="number"
+                              min="0"
+                              max="20"
+                              value={childrenCount}
+                              onChange={(e) => setChildrenCount(Math.max(0, parseInt(e.target.value) || 0))}
+                              className="w-12 text-center font-serif text-base font-semibold text-stone-900 outline-none bg-transparent"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setChildrenCount(childrenCount + 1)}
+                              className="w-8 h-8 rounded-md bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-700 font-bold flex items-center justify-center cursor-pointer transition-all"
+                              title="Increase children count"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-emerald-50/50 border border-emerald-200/50 rounded-lg px-3 py-1.5 text-[11px] text-emerald-800 font-sans flex items-center justify-between">
+                        <span>Total seats requested:</span>
+                        <span className="font-bold font-serif text-xs text-emerald-900">
+                          {adultsCount + childrenCount} {adultsCount + childrenCount === 1 ? 'Guest' : 'Guests'} ({adultsCount} {adultsCount === 1 ? 'Adult' : 'Adults'}{childrenCount > 0 ? `, ${childrenCount} ${childrenCount === 1 ? 'Child' : 'Children'}` : ''})
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
 
 
@@ -290,12 +391,18 @@ export default function RsvpForm() {
                       <div className="bg-stone-50 border border-stone-200/60 rounded-xl px-5 py-3 w-full space-y-1.5 shadow-inner">
                         <p className="text-[10px] text-stone-400 uppercase tracking-widest font-sans font-bold">Admit Guest(s)</p>
                         <p className="font-serif text-base text-stone-900 truncate font-semibold leading-none">{submittedGuest.fullName}</p>
-                        <div className="flex items-center justify-center gap-2 pt-1 border-t border-stone-100">
+                        <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1 border-t border-stone-100">
                           <span className={`text-[9px] uppercase tracking-wider font-sans font-semibold px-2 py-0.5 rounded ${
                             submittedGuest.willAttend === 'yes' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-stone-200 text-stone-600'
                           }`}>
                             {submittedGuest.willAttend === 'yes' ? 'Attending' : 'Declined'}
                           </span>
+                          {submittedGuest.willAttend === 'yes' && (
+                            <span className="text-[9px] font-sans font-medium text-stone-600 bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">
+                              {submittedGuest.adultsCount} Adult{submittedGuest.adultsCount !== 1 ? 's' : ''}
+                              {(submittedGuest.childrenCount ?? 0) > 0 ? `, ${submittedGuest.childrenCount} Child${submittedGuest.childrenCount !== 1 ? 'ren' : ''}` : ''}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -353,9 +460,7 @@ export default function RsvpForm() {
                     <div className="space-y-2">
                       <h4 className="font-serif text-lg text-stone-850 font-medium">Your E-Invitation Card</h4>
                       <p className="text-xs text-stone-500 leading-relaxed max-w-[240px] mx-auto">
-                        Photography & Videography Notice:
-
-Kindly note that photos and videos will be taken throughout the celebration. By attending, you may appear in our wedding memories. Thank you for celebrating with us and sharing your beautiful smiles!
+                        Once you complete the RSVP form on the left, a personalized digital e-card with your unique invitation serial code and Entry QR code will be generated here instantly.
                       </p>
                     </div>
 
