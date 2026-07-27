@@ -4,6 +4,7 @@ export interface RsvpGuest {
   phoneNumber: string;
   willAttend: 'yes' | 'no';
   adultsCount: number;
+  childrenCount: number;
   submittedAt: string;
   eCardCode: string;
   notes?: string;
