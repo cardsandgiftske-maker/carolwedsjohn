@@ -460,7 +460,8 @@ export default function RsvpForm() {
                     <div className="space-y-2">
                       <h4 className="font-serif text-lg text-stone-850 font-medium">Your E-Invitation Card</h4>
                       <p className="text-xs text-stone-500 leading-relaxed max-w-[240px] mx-auto">
-                        Once you complete the RSVP form on the left, a personalized digital e-card with your unique invitation serial code and Entry QR code will be generated here instantly.
+                       Photography & Videography Notice:
+Kindly note that photos and videos will be taken throughout the celebration. By attending, you may appear in our wedding memories. Thank you for celebrating with us and sharing your beautiful smiles!
                       </p>
                     </div>
 
